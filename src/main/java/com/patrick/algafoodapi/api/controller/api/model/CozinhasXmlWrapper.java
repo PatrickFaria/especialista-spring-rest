@@ -17,5 +17,4 @@ public class CozinhasXmlWrapper {
     @JacksonXmlElementWrapper(useWrapping = false)
     @NonNull
     private List<Cozinha> cozinhas;
-
 }
