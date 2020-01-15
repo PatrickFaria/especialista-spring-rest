@@ -12,11 +12,10 @@ import java.util.List;
 @Repository
 public class RestauranteRepositoryImpl implements RestauranteRepository {
 
-
     @PersistenceContext
     private EntityManager manager;
 
-    public List<Restaurante> todas() {
+    public List<Restaurante> listar() {
         return manager.createQuery("from Restaurante", Restaurante.class).getResultList();
     }
 
@@ -30,8 +29,9 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Transactional
-    public void remover(Restaurante restaurante) {
-        restaurante = porId(restaurante.getId());
+    public void remover(Long restauranteId) {
+        Restaurante restaurante = new Restaurante();
+        restaurante = porId(restauranteId);
         manager.remove(restaurante);
     }
 }

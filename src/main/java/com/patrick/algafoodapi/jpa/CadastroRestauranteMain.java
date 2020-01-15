@@ -34,7 +34,7 @@ public class CadastroRestauranteMain {
         cadastroRestaurante.adicionar(r1);
         cadastroRestaurante.adicionar(r2);
 
-        cadastroRestaurante.remover(r2);
+        cadastroRestaurante.remover(r2.getId());
         cadastroRestaurante.adicionar(r1);
     }
 }

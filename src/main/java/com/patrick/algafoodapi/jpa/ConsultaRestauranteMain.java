@@ -1,9 +1,7 @@
 package com.patrick.algafoodapi.jpa;
 
 import com.patrick.algafoodapi.AlgafoodApiApplication;
-import com.patrick.algafoodapi.domain.model.Cozinha;
 import com.patrick.algafoodapi.domain.model.Restaurante;
-import com.patrick.algafoodapi.infrastructure.repository.CozinhaRepositoryImpl;
 import com.patrick.algafoodapi.infrastructure.repository.RestauranteRepositoryImpl;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -18,7 +16,7 @@ public class ConsultaRestauranteMain {
                 .run(args);
 
         RestauranteRepositoryImpl restaurantes = applicationContext.getBean(RestauranteRepositoryImpl.class);
-        List<Restaurante> todosRestaurante = restaurantes.todas();
+        List<Restaurante> todosRestaurante = restaurantes.listar();
 
         for(Restaurante restaurante : todosRestaurante){
             System.out.printf("%s - %f - %s\n",restaurante.getNome(),restaurante.getTaxaFrete(),

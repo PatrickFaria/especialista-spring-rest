@@ -1,6 +1,5 @@
 package com.patrick.algafoodapi.api.controller;
 
-import com.patrick.algafoodapi.api.controller.api.model.CozinhasXmlWrapper;
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.patrick.algafoodapi.domain.model.Cozinha;
@@ -9,7 +8,6 @@ import com.patrick.algafoodapi.domain.service.CadastroCozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +28,9 @@ public class CozinhaController {
         return cozinhaRepository.listar();
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-    public CozinhasXmlWrapper listarXML() {
-        return new CozinhasXmlWrapper(cozinhaRepository.listar());
-    }
-
     @GetMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> buscar(@PathVariable Long cozinhaId) {
-        Cozinha cozinha = cozinhaRepository.porId(cozinhaId);
+        Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
         //return ResponseEntity.status(HttpStatus.OK).body(cozinha);
         if(cozinha == null){
             return ResponseEntity.notFound().build();
@@ -56,13 +49,12 @@ public class CozinhaController {
 
     @PutMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> editar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha){
-        Cozinha cozinhaAtual = cozinhaRepository.porId(cozinhaId);
-        //cozinhaAtual.setNome(cozinha.getNome());
+        Cozinha cozinhaAtual = cozinhaRepository.buscar(cozinhaId);
         if(cozinhaAtual == null){
             return ResponseEntity.notFound().build();
         }
         BeanUtils.copyProperties(cozinha,cozinhaAtual,"id");
-        cozinhaRepository.adicionar(cozinhaAtual);
+        cozinhaAtual = cadastroCozinhaService.salvar(cozinhaAtual);
         return ResponseEntity.ok(cozinhaAtual);
     }
 

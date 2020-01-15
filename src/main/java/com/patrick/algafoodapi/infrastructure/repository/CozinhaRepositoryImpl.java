@@ -25,13 +25,13 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
         return manager.merge(cozinha);
     }
 
-    public Cozinha porId(Long id){
+    public Cozinha buscar(Long id){
         return manager.find(Cozinha.class, id);
     }
 
     @Transactional
     public void remover(Long id){
-        Cozinha cozinha = porId(id);
+        Cozinha cozinha = buscar(id);
 
         if(cozinha == null){
             throw  new EmptyResultDataAccessException(1);
