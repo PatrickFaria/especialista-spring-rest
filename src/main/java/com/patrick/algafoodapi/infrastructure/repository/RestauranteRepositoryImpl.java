@@ -24,14 +24,14 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         return manager.merge(restaurante);
     }
 
-    public Restaurante porId(Long id) {
+    public Restaurante buscar(Long id) {
         return manager.find(Restaurante.class, id);
     }
 
     @Transactional
     public void remover(Long restauranteId) {
         Restaurante restaurante = new Restaurante();
-        restaurante = porId(restauranteId);
+        restaurante = buscar(restauranteId);
         manager.remove(restaurante);
     }
 }

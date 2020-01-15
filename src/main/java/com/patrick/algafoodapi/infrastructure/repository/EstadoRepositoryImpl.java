@@ -25,13 +25,13 @@ public class EstadoRepositoryImpl implements EstadoRepository {
         return manager.merge(estado);
     }
 
-    public Estado porId(Long id){
+    public Estado buscar(Long id){
         return manager.find(Estado.class, id);
     }
 
     @Transactional
-    public void remover(Estado estado){
-        estado = porId(estado.getId());
+    public void remover(Long estadoId){
+        Estado estado = buscar(estadoId);
         manager.remove(estado);
     }
 }
