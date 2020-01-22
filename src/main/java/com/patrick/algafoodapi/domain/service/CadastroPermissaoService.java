@@ -2,35 +2,38 @@ package com.patrick.algafoodapi.domain.service;
 
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
-import com.patrick.algafoodapi.domain.model.Estado;
-import com.patrick.algafoodapi.domain.repository.EstadoRepository;
+import com.patrick.algafoodapi.domain.model.FormaPagamento;
+import com.patrick.algafoodapi.domain.model.Permissao;
+import com.patrick.algafoodapi.domain.repository.PermissaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CadastroEstadoService {
+public class CadastroPermissaoService {
 
     @Autowired
-    private EstadoRepository estadoRepository;
+    private PermissaoRepository permissaoRepository;
 
-    public Estado salvar(Estado estado){
-        return estadoRepository.save(estado);
+    public Permissao salvar(Permissao permissao){
+        return permissaoRepository.save(permissao);
     }
 
-    public void excluir(Long estadoId){
+    public void excluir(Long permissaoId){
         try {
-            estadoRepository.deleteById(estadoId);
+            permissaoRepository.deleteById(permissaoId);
         }catch (EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de estado de código %d !", estadoId)
+                    String.format("Não existe um cadastro de permissao de código %d!", permissaoId)
             );
         }catch (DataIntegrityViolationException e){
             throw new EntidadeEmUsoException(
-                    String.format("Estado de código %d não pode ser removida, pois está em uso!", estadoId)
+                    String.format("Permissao de código %d não pode ser removida, pois está em uso!", permissaoId)
             );
         }
     }
+
+
 
 }
