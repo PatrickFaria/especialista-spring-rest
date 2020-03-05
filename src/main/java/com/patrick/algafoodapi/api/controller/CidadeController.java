@@ -2,6 +2,7 @@ package com.patrick.algafoodapi.api.controller;
 
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
+import com.patrick.algafoodapi.domain.exception.EstadoNaoEncontradoException;
 import com.patrick.algafoodapi.domain.exception.NegocioException;
 import com.patrick.algafoodapi.domain.model.Cidade;
 import com.patrick.algafoodapi.domain.repository.CidadeRepository;
@@ -38,23 +39,23 @@ public class CidadeController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public Cidade adicionar(@RequestBody Cidade cidade) {
-        try{
+        try {
             return cadastroCidadeService.salvar(cidade);
-        }catch (EntidadeNaoEncontradaException e){
-            throw new NegocioException(e.getMessage());
+        } catch (EstadoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{cidadeId}")
-    public Cidade editar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
-        Cidade cidadeAtual = cadastroCidadeService.buscarOuFalhar(cidadeId);
+    public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
+        try {
+            Cidade cidadeAtual = cadastroCidadeService.buscarOuFalhar(cidadeId);
 
-        BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+            BeanUtils.copyProperties(cidade, cidadeAtual, "id");
 
-        try{
             return cadastroCidadeService.salvar(cidadeAtual);
-        }catch (EntidadeNaoEncontradaException e){
-            throw new NegocioException(e.getMessage());
+        } catch (EstadoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 

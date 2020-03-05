@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
+import com.patrick.algafoodapi.domain.exception.NegocioException;
 import com.patrick.algafoodapi.domain.model.Restaurante;
 import com.patrick.algafoodapi.domain.repository.RestauranteRepository;
 import com.patrick.algafoodapi.domain.service.CadastroRestauranteService;
@@ -41,7 +42,12 @@ public class RestauranteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurante adicionar(@RequestBody Restaurante restaurante) {
-        return cadastroRestauranteService.salvar(restaurante);
+        try{
+            return cadastroRestauranteService.salvar(restaurante);
+        }catch (EntidadeNaoEncontradaException e){
+            throw  new NegocioException(e.getMessage());
+        }
+
 
     }
 
