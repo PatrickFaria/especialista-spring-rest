@@ -1,5 +1,6 @@
 package com.patrick.algafoodapi.domain.service;
 
+import com.patrick.algafoodapi.domain.exception.CidadeNaoEncontradaException;
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.patrick.algafoodapi.domain.model.Cidade;
@@ -41,7 +42,7 @@ public class CadastroCidadeService {
         try {
             cidadeRepository.deleteById(cidadeId);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(
+            throw new CidadeNaoEncontradaException(
                     String.format(CIDADE_NAO_EXISTENTE, cidadeId)
             );
         } catch (DataIntegrityViolationException e) {
@@ -53,7 +54,7 @@ public class CadastroCidadeService {
 
     public Cidade buscarOuFalhar(Long cidadeId) {
         return cidadeRepository.findById(cidadeId).orElseThrow(() ->
-                new EntidadeNaoEncontradaException(String.format(CIDADE_NAO_EXISTENTE, cidadeId)
+                new CidadeNaoEncontradaException(String.format(CIDADE_NAO_EXISTENTE, cidadeId)
                 ));
     }
 }

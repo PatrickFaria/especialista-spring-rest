@@ -2,6 +2,7 @@ package com.patrick.algafoodapi.domain.service;
 
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
+import com.patrick.algafoodapi.domain.exception.RestauranteNaoEncontradoException;
 import com.patrick.algafoodapi.domain.model.Cozinha;
 import com.patrick.algafoodapi.domain.model.Estado;
 import com.patrick.algafoodapi.domain.model.Restaurante;
@@ -38,7 +39,7 @@ public class CadastroRestauranteService {
         try {
             restauranteRepository.deleteById(restauranteId);
         }catch (EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(
+            throw new RestauranteNaoEncontradoException(
                     String.format(RESTAURANTE_NAO_EXISTENTE, restauranteId)
             );
         }catch (DataIntegrityViolationException e){
@@ -50,7 +51,7 @@ public class CadastroRestauranteService {
 
     public Restaurante buscarOuFalhar(Long restauranteId) {
         return restauranteRepository.findById(restauranteId).orElseThrow(() ->
-                new EntidadeNaoEncontradaException(String.format(RESTAURANTE_NAO_EXISTENTE, restauranteId)
+                new RestauranteNaoEncontradoException(String.format(RESTAURANTE_NAO_EXISTENTE, restauranteId)
                 ));
     }
 

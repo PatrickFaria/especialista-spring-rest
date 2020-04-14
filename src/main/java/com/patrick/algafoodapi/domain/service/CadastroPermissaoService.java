@@ -2,6 +2,7 @@ package com.patrick.algafoodapi.domain.service;
 
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
+import com.patrick.algafoodapi.domain.exception.PermissaoNaoEncontradaException;
 import com.patrick.algafoodapi.domain.model.FormaPagamento;
 import com.patrick.algafoodapi.domain.model.Permissao;
 import com.patrick.algafoodapi.domain.repository.PermissaoRepository;
@@ -24,7 +25,7 @@ public class CadastroPermissaoService {
         try {
             permissaoRepository.deleteById(permissaoId);
         }catch (EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(
+            throw new PermissaoNaoEncontradaException(
                     String.format("Não existe um cadastro de permissao de código %d!", permissaoId)
             );
         }catch (DataIntegrityViolationException e){
