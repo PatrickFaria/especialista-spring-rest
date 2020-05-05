@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.patrick.algafoodapi.core.validation.ValidacaoException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.patrick.algafoodapi.domain.exception.NegocioException;
 import com.patrick.algafoodapi.domain.model.Restaurante;
@@ -17,12 +18,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -33,6 +37,9 @@ public class RestauranteController {
 
     @Autowired
     private CadastroRestauranteService cadastroRestauranteService;
+
+    @Autowired
+    private SmartValidator validator;
 
     @GetMapping
     public List<Restaurante> listar() {
@@ -48,10 +55,10 @@ public class RestauranteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
-        try{
+        try {
             return cadastroRestauranteService.salvar(restaurante);
-        }catch (EntidadeNaoEncontradaException e){
-            throw  new NegocioException(e.getMessage());
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
         }
 
 
@@ -59,7 +66,7 @@ public class RestauranteController {
 
     @PutMapping("/{restauranteId}")
     public Restaurante atualizar(@PathVariable Long restauranteId,
-                                       @RequestBody @Valid Restaurante restaurante) {
+                                 @RequestBody @Valid Restaurante restaurante) {
         Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
         BeanUtils.copyProperties(restaurante, restauranteAtual,
                 "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
@@ -68,17 +75,30 @@ public class RestauranteController {
 
     @PatchMapping("/{restauranteId}")
     public Restaurante atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos
-    , HttpServletRequest request) {
+            , HttpServletRequest request) {
         Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
         merge(campos, restauranteAtual, request);
 
+        validate(restauranteAtual, "restaurante");
+
         return atualizar(restauranteId, restauranteAtual);
+    }
+
+    public void validate(Restaurante restaurante, String objectName) {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
+
+        validator.validate(restaurante, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidacaoException(bindingResult);
+        }
+
     }
 
     private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
         ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
-        try{
+        try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
@@ -91,7 +111,7 @@ public class RestauranteController {
 //			System.out.println(nomePropriedade + " = " + valorPropriedade + " = " + novoValor);
                 ReflectionUtils.setField(field, restauranteDestino, novoValor);
             });
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
         }
