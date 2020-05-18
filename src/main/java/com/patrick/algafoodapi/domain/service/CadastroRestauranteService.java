@@ -19,6 +19,7 @@ public class CadastroRestauranteService {
     public static final String RESTAURANTE_NAO_EXISTENTE = "Não existe um cadastro de restaurante de código %d!";
     public static final String RESTAURANTE_ESTA_EM_USO = "Restaurante de código %d não pode ser removida, pois está em uso!";
     public static final String NÃO_EXISTE_COZINHA_COM_CÓDIGO = "Não existe cadastro de cozinha com código %d!";
+
     @Autowired
     private RestauranteRepository restauranteRepository;
 
