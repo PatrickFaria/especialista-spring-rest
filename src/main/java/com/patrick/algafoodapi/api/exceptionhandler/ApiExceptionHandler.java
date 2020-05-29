@@ -40,13 +40,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private MessageSource messageSource;
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex
+            , HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Object> handleUncaught(NoHandlerFoundException ex,
-                                                    HttpHeaders headers, HttpStatus status, WebRequest request) {
-
+    protected ResponseEntity<Object> handleUncaught(Exception ex,
+                                                    HttpHeaders headers, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
-
         String detail = String.format(MSG_ERRO_GENERICO_USURIO_FINAL);
+
+        ex.printStackTrace();
+
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .userMessage(detail)
                 .timestamp(LocalDateTime.now())
@@ -60,13 +69,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleValidacaoException(ValidacaoException ex, WebRequest request) {
         return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(),
                 HttpStatus.BAD_REQUEST, request);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex
-            , HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
@@ -219,12 +221,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NegocioException.class)
     public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
-        HttpStatus status = HttpStatus.CONFLICT;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
 
         ProblemType problemType = ProblemType.ERRO_NEGOCIO;
 
+        String detail = ex.getMessage();
+
         Problem problem = createProblemBuilder(status, problemType, ex.getMessage())
-                .userMessage(MSG_ERRO_GENERICO_USURIO_FINAL)
+                .userMessage(detail)
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -252,20 +256,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             , WebRequest request) {
         if (body == null) {
             body = Problem.builder()
+                    .timestamp(LocalDateTime.now())
                     .title(status.getReasonPhrase())
                     .status(status.value())
+                    .userMessage(MSG_ERRO_GENERICO_USURIO_FINAL)
                     .build();
         } else if (body instanceof String) {
             body = Problem.builder()
+                    .timestamp(LocalDateTime.now())
                     .title((String) body)
                     .status(status.value())
+                    .userMessage(MSG_ERRO_GENERICO_USURIO_FINAL)
                     .build();
         }
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
-        return Problem.builder().status(status.value())
+        return Problem.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
                 .type(problemType.getUri())
                 .title(problemType.getTitle())
                 .detail(detail);
