@@ -2,6 +2,7 @@ package com.patrick.algafoodapi.core.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 import java.math.BigDecimal;
 
 public class MultiploValidator implements ConstraintValidator<Multiplo, Number> {
@@ -18,9 +19,9 @@ public class MultiploValidator implements ConstraintValidator<Multiplo, Number> 
         boolean valido = true;
 
         if(number != null){
-            var valorDecimal = BigDecimal.valueOf(number.doubleValue());
-            var multipoDecimal = BigDecimal.valueOf(this.numeroMultiplo);
-            var resto = valorDecimal.remainder(multipoDecimal);
+            BigDecimal valorDecimal = BigDecimal.valueOf(number.doubleValue());
+            BigDecimal multipoDecimal = BigDecimal.valueOf(this.numeroMultiplo);
+            BigDecimal resto = valorDecimal.remainder(multipoDecimal);
 
             valido = BigDecimal.ZERO.compareTo(resto) == 0;
         }

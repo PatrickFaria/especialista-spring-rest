@@ -8,6 +8,16 @@ import org.springframework.validation.BindingResult;
 @Getter
 public class ValidacaoException extends RuntimeException {
 
-    private BindingResult bindingResult;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private BindingResult bindingResult;
+	public BindingResult getBindingResult() {
+		return bindingResult;
+	}
+	public void setBindingResult(BindingResult bindingResult) {
+		this.bindingResult = bindingResult;
+	}
 
 }

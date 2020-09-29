@@ -2,13 +2,13 @@ package com.patrick.algafoodapi.domain.service;
 
 import com.patrick.algafoodapi.domain.exception.CozinhaNaoEncontradaException;
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
-import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.patrick.algafoodapi.domain.model.Cozinha;
 import com.patrick.algafoodapi.domain.repository.CozinhaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroCozinhaService {
@@ -18,14 +18,16 @@ public class CadastroCozinhaService {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
+    @Transactional
     public Cozinha salvar(Cozinha cozinha) {
         return cozinhaRepository.save(cozinha);
     }
 
+    @Transactional
     public void excluir(Long cozinhaId) {
         try {
             cozinhaRepository.deleteById(cozinhaId);
-
+            cozinhaRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new CozinhaNaoEncontradaException(
                     String.format(MSG_COZINHA_NAO_ENCONTRADA, cozinhaId));

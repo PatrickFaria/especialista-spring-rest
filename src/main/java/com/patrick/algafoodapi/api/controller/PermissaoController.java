@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.patrick.algafoodapi.domain.model.Cidade;
-import com.patrick.algafoodapi.domain.model.FormaPagamento;
 import com.patrick.algafoodapi.domain.model.Permissao;
 import com.patrick.algafoodapi.domain.model.Restaurante;
 import com.patrick.algafoodapi.domain.repository.PermissaoRepository;

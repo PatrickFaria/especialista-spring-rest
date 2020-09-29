@@ -1,10 +1,8 @@
 package com.patrick.algafoodapi.domain.service;
 
 import com.patrick.algafoodapi.domain.exception.EntidadeEmUsoException;
-import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.patrick.algafoodapi.domain.exception.RestauranteNaoEncontradoException;
 import com.patrick.algafoodapi.domain.model.Cozinha;
-import com.patrick.algafoodapi.domain.model.Estado;
 import com.patrick.algafoodapi.domain.model.Restaurante;
 import com.patrick.algafoodapi.domain.repository.CozinhaRepository;
 import com.patrick.algafoodapi.domain.repository.RestauranteRepository;
@@ -12,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroRestauranteService {
 
     public static final String RESTAURANTE_NAO_EXISTENTE = "Não existe um cadastro de restaurante de código %d!";
     public static final String RESTAURANTE_ESTA_EM_USO = "Restaurante de código %d não pode ser removida, pois está em uso!";
-    public static final String NÃO_EXISTE_COZINHA_COM_CÓDIGO = "Não existe cadastro de cozinha com código %d!";
+    public static final String NAO_EXISTE_COZINHA_COM_CODIGO = "Não existe cadastro de cozinha com código %d!";
 
     @Autowired
     private RestauranteRepository restauranteRepository;
@@ -29,6 +28,7 @@ public class CadastroRestauranteService {
     @Autowired
     private CadastroCozinhaService cadastroCozinhaService;
 
+    @Transactional
     public Restaurante salvar(Restaurante restaurante){
         Long cozinhaId = restaurante.getCozinha().getId();
         Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
@@ -36,9 +36,11 @@ public class CadastroRestauranteService {
         return restauranteRepository.save(restaurante);
     }
 
+    @Transactional
     public void excluir(Long restauranteId){
         try {
             restauranteRepository.deleteById(restauranteId);
+            restauranteRepository.flush();
         }catch (EmptyResultDataAccessException e){
             throw new RestauranteNaoEncontradoException(
                     String.format(RESTAURANTE_NAO_EXISTENTE, restauranteId)

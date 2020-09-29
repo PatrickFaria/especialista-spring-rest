@@ -1,12 +1,11 @@
 package com.patrick.algafoodapi.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,13 +32,13 @@ public class Pedido {
     private Endereco enderecoEntrega;
 
     @CreationTimestamp
-    private LocalDateTime dataCriacao;
+    private OffsetDateTime dataCriacao;
 
-    private LocalDateTime dataConfirmacao;
+    private OffsetDateTime dataConfirmacao;
 
-    private LocalDateTime dataCancelemento;
+    private OffsetDateTime dataCancelemento;
 
-    private LocalDateTime dataEntrega;
+    private OffsetDateTime dataEntrega;
 
     @ManyToOne
     @JoinColumn(nullable = false)
