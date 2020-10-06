@@ -1,37 +1,22 @@
 package com.patrick.algafoodapi.api.controller;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrick.algafoodapi.api.assembler.RestauranteInputDisassembly;
 import com.patrick.algafoodapi.api.assembler.RestauranteModelAssembler;
-import com.patrick.algafoodapi.api.model.CozinhaModel;
 import com.patrick.algafoodapi.api.model.RestauranteModel;
 import com.patrick.algafoodapi.api.model.input.RestauranteInput;
-import com.patrick.algafoodapi.core.validation.ValidacaoException;
 import com.patrick.algafoodapi.domain.exception.CozinhaNaoEncontradaException;
 import com.patrick.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.patrick.algafoodapi.domain.exception.NegocioException;
-import com.patrick.algafoodapi.domain.model.Cozinha;
 import com.patrick.algafoodapi.domain.model.Restaurante;
 import com.patrick.algafoodapi.domain.repository.RestauranteRepository;
 import com.patrick.algafoodapi.domain.service.CadastroRestauranteService;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -91,7 +76,20 @@ public class RestauranteController {
         }
     }
 
-//    @PatchMapping("/{restauranteId}")
+    @PutMapping("/{restauranteId}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativar(@PathVariable Long restauranteId) {
+        cadastroRestauranteService.ativar(restauranteId);
+    }
+
+    @DeleteMapping("/{restauranteId}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativar(@PathVariable Long restauranteId) {
+        cadastroRestauranteService.inativar(restauranteId);
+    }
+
+
+    //    @PatchMapping("/{restauranteId}")
 //    public RestauranteModel atualizarParcial(@PathVariable Long restauranteId,
 //                                             @RequestBody Map<String, Object> campos
 //            , HttpServletRequest request) {

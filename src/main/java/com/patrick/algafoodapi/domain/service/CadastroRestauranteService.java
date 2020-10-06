@@ -17,7 +17,6 @@ public class CadastroRestauranteService {
 
     public static final String RESTAURANTE_NAO_EXISTENTE = "Não existe um cadastro de restaurante de código %d!";
     public static final String RESTAURANTE_ESTA_EM_USO = "Restaurante de código %d não pode ser removida, pois está em uso!";
-    public static final String NAO_EXISTE_COZINHA_COM_CODIGO = "Não existe cadastro de cozinha com código %d!";
 
     @Autowired
     private RestauranteRepository restauranteRepository;
@@ -34,6 +33,20 @@ public class CadastroRestauranteService {
         Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
         restaurante.setCozinha(cozinha);
         return restauranteRepository.save(restaurante);
+    }
+
+    @Transactional
+    public void ativar(Long restauranteId){
+        Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
+
+        restauranteAtual.ativar();
+    }
+
+    @Transactional
+    public void inativar(Long restauranteId){
+        Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
+
+        restauranteAtual.inativar();
     }
 
     @Transactional

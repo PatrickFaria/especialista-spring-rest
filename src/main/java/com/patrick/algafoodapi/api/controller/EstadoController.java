@@ -7,7 +7,6 @@ import com.patrick.algafoodapi.api.model.input.EstadoInput;
 import com.patrick.algafoodapi.domain.model.Estado;
 import com.patrick.algafoodapi.domain.repository.EstadoRepository;
 import com.patrick.algafoodapi.domain.service.CadastroEstadoService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
