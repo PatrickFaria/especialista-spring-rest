@@ -1,6 +1,5 @@
 package com.patrick.algafoodapi.api.model;
 
-import com.patrick.algafoodapi.domain.model.Cozinha;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +18,7 @@ public class RestauranteModel {
     private CozinhaModel cozinha;
 
     private Boolean ativo;
+
+    private EnderecoModel endereco;
 
 }
